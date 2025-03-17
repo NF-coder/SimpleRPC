@@ -1,7 +1,6 @@
 # SimpleRPC
 
 Simple framework to create your own gRPC server with grpcio.
-### It's early version so api isn't stable!
 
 ### Todo
 
