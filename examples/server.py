@@ -1,6 +1,5 @@
 from SimpleRPC import GrpcServer
 from pydantic import BaseModel
-import asyncio
 
 class RequestModel(BaseModel):
     num1: int

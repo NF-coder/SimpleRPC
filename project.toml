@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "simple-rpc"
+version = "0.0.1"
+description = "Simple framework to create your own gRPC server with grpcio"
+authors = ["NF-coder"]
+license = "MIT License"
+readme = "README.md"
+packages = [
+  { include = "SimpleRPC" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+grpcio = "~1.71.0"
+pydantic = "^2.8.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
