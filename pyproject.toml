@@ -9,7 +9,7 @@ description = "Simple framework to create your own gRPC server with grpcio"
 authors = [
   {name = "NF-coder", email = "reshes@rambler.ru"}
 ]
-license = "MIT License"
+license = "MIT"
 readme = "README.md"
 packages = [
   { include = "SimpleRPC" },
