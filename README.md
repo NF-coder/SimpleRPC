@@ -6,6 +6,7 @@ Simple framework to create your own gRPC server with grpcio.
 ### Todo
 
 - [x] Exceptions handling
+- [ ] Secure channels support
 - [ ] Autoconfigure from pydantic model
 - [ ] Simplify usage
 - [ ] Tests and docs
