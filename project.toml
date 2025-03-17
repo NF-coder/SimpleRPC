@@ -1,19 +1,22 @@
-[tool.poetry]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
 name = "simple-rpc"
 version = "0.0.1"
 description = "Simple framework to create your own gRPC server with grpcio"
-authors = ["NF-coder"]
+authors = [
+  {name = "NF-coder", email = "reshes@rambler.ru"}
+]
 license = "MIT License"
 readme = "README.md"
 packages = [
   { include = "SimpleRPC" },
 ]
-
-[tool.poetry.dependencies]
-python = "^3.12"
-grpcio = "~1.71.0"
-pydantic = "^2.8.2"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.8".
+dependencies = [
+  "grpcio >= 1.71.0",
+  "pydantic >= 2.8.0"
+]
+requires-python = ">=3.12"
