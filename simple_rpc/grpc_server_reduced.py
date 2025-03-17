@@ -2,6 +2,7 @@ from pydantic import BaseModel
 import grpc
 from typing_extensions import Callable
 import asyncio
+import inspect
 
 class GrpcServer():
 
@@ -58,20 +59,20 @@ class GrpcServer():
 
     def grpc_method(
             grpc_cls_self, # self analog
-            inp_model: type[BaseModel], # input pydantic model
-            out_model: type[BaseModel], # output pydantic model
-            out_proto_name: str # name of ouptut proto message
+            out_proto_name: str, # name of ouptut proto message
+            inp_model: type[BaseModel] | None = None, # input pydantic model
+            out_model: type[BaseModel] | None = None, # output pydantic model
         ) -> Callable: # megawrapper
         '''
             gRPC decodator initializer
 
             Args:
-                inp_model (`Base Model`):
-                    input pydantic model
-                out_model (`Base Model`):
-                    output pydantic model
                 out_proto_name (str):
                     name of ouptut proto message
+                inp_model (`Base Model` ?):
+                    input pydantic model
+                out_model (`Base Model` ?):
+                    output pydantic model
             Returns:
                 Callable:
                     wrapped function
@@ -100,16 +101,24 @@ class GrpcServer():
                         object:
                             gRPC parsed message
                 '''
-                input_data = inp_model.model_validate(
-                    request,
-                    from_attributes=True
-                )
                 try:
-                    _ = await func(self, **input_data.model_dump())
+                    if inp_model is not None:
+                        func_kwargs = inp_model.model_validate(
+                            request,
+                            from_attributes=True
+                        ).model_dump()
+                    else: # TODO: REWRITE THIS!
+                        func_kwargs = {
+                            k: request.__getattribute__(k)
+                            for k in inspect.signature(func).parameters.keys()
+                            if k != "self"
+                        }
+                    
+                    _ = await func(self, **func_kwargs)
 
-                    # TODO: test this
-                    if not isinstance(_, out_model):
-                        raise ValueError("resp mismatch")
+                    if out_model is not None: # optional
+                        if not isinstance(_, out_model):  # TODO: test this
+                            raise ValueError("resp mismatch")
 
                     out_proto = getattr(
                         grpc_cls_self.proto_pb2, out_proto_name

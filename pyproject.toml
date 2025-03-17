@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "simple-rpc"
-version = "0.0.1"
+version = "0.0.2"
 description = "Simple framework to create your own gRPC server with grpcio"
 authors = [
   {name = "NF-coder", email = "reshes@rambler.ru"}

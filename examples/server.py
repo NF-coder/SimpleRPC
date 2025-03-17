@@ -1,4 +1,4 @@
-from SimpleRPC import GrpcServer
+from simple_rpc import GrpcServer
 from pydantic import BaseModel
 
 class RequestModel(BaseModel):
@@ -13,7 +13,7 @@ app = GrpcServer(
 )
 
 class Server: 
-    @app.grpc_method(inp_model=RequestModel, out_model=ResponceModel, out_proto_name="ResponceMsg")
+    @app.grpc_method(out_proto_name="ResponceMsg")
     async def Method(self, num1) -> ResponceModel:
         return ResponceModel(
             num2 = num1*2,
@@ -23,6 +23,6 @@ class Server:
 app.configure_service(
     proto_service_name="Example",
     cls = Server(),
-    port=50055
+    port=50056
 )
 app.run()

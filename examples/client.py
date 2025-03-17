@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from SimpleRPC import GrpcClient
+from simple_rpc_future import GrpcClient
 import asyncio
 
 class ResponceModel(BaseModel):
@@ -7,7 +7,7 @@ class ResponceModel(BaseModel):
     num4: int
 
 cli = GrpcClient(
-    port=50055
+    port=50056
 )
 command = cli.configure_command(
     struct_name="RequestMsg",
