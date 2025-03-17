@@ -93,7 +93,3 @@ message ResponceMsg {
   int32 num4 = 2;
 }
 ```
-
-## TODO
-
-1. Add documentation
