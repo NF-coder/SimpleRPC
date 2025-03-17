@@ -2,6 +2,11 @@
 
 Simple framework to create your own gRPC server with grpcio.
 
+### Installation
+```bash
+pip install git+https://github.com/NF-coder/SimpleRPC.git
+```
+
 ### Todo
 
 - [x] Exceptions handling
