@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from simple_rpc.v2.client import GrpcClientV2
 import asyncio
-import pathlib
 
 client = GrpcClientV2(
     port=50051

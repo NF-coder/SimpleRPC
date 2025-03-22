@@ -1,6 +1,5 @@
 from simple_rpc.v2.server import GrpcServerV2
 from pydantic import BaseModel
-import pathlib
 
 class RequestModel(BaseModel):
     pass
