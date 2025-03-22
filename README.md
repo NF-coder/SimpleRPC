@@ -19,33 +19,29 @@ pip install git+https://github.com/NF-coder/SimpleRPC.git
 
 server.py
 ```python
-from SimpleRPC import GrpcServer
+from simple_rpc.v2.server import GrpcServerV2
 from pydantic import BaseModel
-import asyncio
 
 class RequestModel(BaseModel):
-    num1: int
+    pass
 
 class ResponceModel(BaseModel):
     num2: int
     num4: int
 
-app = GrpcServer(
-    proto_filename = "proto.proto"
-)
+app = GrpcServerV2()
 
-class Server: 
-    @app.grpc_method(inp_model=RequestModel, out_model=ResponceModel, out_proto_name="ResponceMsg")
-    async def Method(self, num1) -> ResponceModel:
+class Server:
+    @app.grpc_method()
+    async def example_method(self, request: RequestModel) -> ResponceModel:
         return ResponceModel(
-            num2 = num1*2,
-            num4 = 99
+            num2 = 3,
+            num4 = 1
         )
     
 app.configure_service(
-    proto_service_name="Example",
-    cls = Server(),
-    port=50055
+    cls=Server(),
+    port=50051
 )
 app.run()
 ```
@@ -53,48 +49,25 @@ app.run()
 client.py
 ```python
 from pydantic import BaseModel
-from SimpleRPC import GrpcClient
+from simple_rpc.v2.client import GrpcClientV2
 import asyncio
 
-class ResponceModel(BaseModel):
-    num2: int
-    num4: int
+client = GrpcClientV2(
+    port=50051
+)
+command = client.configure_command(
+    functionName="example_method",
+    className="Server"
+)
 
-cli = GrpcClient(
-    port=50055
-)
-command = cli.configure_command(
-    struct_name="RequestMsg",
-    func_name="Method",
-    service_name="Example",
-    responce_validation_model=ResponceModel
-)
 
 async def run():
     print(
-        await command(num1 = 1)
+        await command()
     )
 
 if __name__ == "__main__":
     asyncio.run(
         run()
     )
-```
-
-proto.proto
-```protobuf
-syntax = "proto3";
-
-service Example {
-   rpc Method(RequestMsg) returns (ResponceMsg) {}
-}
-
-message RequestMsg {
-  int32 num1 = 1;
-}
-
-message ResponceMsg {
-  int32 num2 = 1;
-  int32 num4 = 2;
-}
 ```
