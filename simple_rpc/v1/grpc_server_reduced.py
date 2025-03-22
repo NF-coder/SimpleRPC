@@ -9,7 +9,7 @@ class GrpcServer():
     # --- CONFIGURATION AND STARTUP PART ---
 
     def __init__(self, proto_filename: str = "proto.proto") -> None: 
-        self.proto_pb2, self.proto_pb2_grpc = grpc.protos_and_services(proto_filename) # noqa
+        self.proto_pb2, self.proto_pb2_grpc = grpc.protos_and_services(proto_filename) # type: ignore
 
     def _register_servicer(self, proto_service_name) -> Callable:
         service_name = f"{proto_service_name}Servicer" # Service grpc pseudonim
@@ -29,7 +29,7 @@ class GrpcServer():
         self._register_servicer(
             self.proto_service_name
         )(self.cls, server) # proto service registration
-        return server # noqa
+        return server # type: ignore
     
     def configure_service(
             self,
@@ -58,7 +58,7 @@ class GrpcServer():
     # --- MAIN PART ---
 
     def grpc_method(
-            grpc_cls_self, # self analog
+            grpc_cls_self, # self alias pylint:disable=reportSelfClsParameterName
             out_proto_name: str, # name of ouptut proto message
             inp_model: type[BaseModel] | None = None, # input pydantic model
             out_model: type[BaseModel] | None = None, # output pydantic model
@@ -118,7 +118,7 @@ class GrpcServer():
 
                     if out_model is not None: # optional
                         if not isinstance(_, out_model):  # TODO: test this
-                            raise ValueError("resp mismatch")
+                            raise ValueError("responce model type mismatch")
 
                     out_proto = getattr(
                         grpc_cls_self.proto_pb2, out_proto_name

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from simple_rpc_future import GrpcClient
+from simple_rpc import GrpcClient
 import asyncio
 
 class ResponceModel(BaseModel):

@@ -12,7 +12,7 @@ app = GrpcServer(
     proto_filename = "proto.proto"
 )
 
-class Server: 
+class Server:
     @app.grpc_method(out_proto_name="ResponceMsg")
     async def Method(self, num1) -> ResponceModel:
         return ResponceModel(

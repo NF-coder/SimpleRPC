@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "simple-rpc"
-version = "0.0.2"
+version = "0.1.0"
 description = "Simple framework to create your own gRPC server with grpcio"
 authors = [
   {name = "NF-coder", email = "reshes@rambler.ru"}
@@ -16,6 +16,6 @@ packages = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-  "grpcio >= 1.71.0",
+  "grpcio == 1.71.0",
   "pydantic >= 2.8.0",
 ]

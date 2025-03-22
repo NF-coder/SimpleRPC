@@ -1,0 +1,26 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+service {{ service.name }} {
+{% for method in service.methods %}
+    rpc {{ method.name }}({{ method.input }}) returns ({{ method.output}}) {}
+{% endfor %}
+}
+{% for message in service.messages %}
+message {{ message.name }} {
+{% for field in message.fields %}
+    {% if field.isRepeated %}repeated {% endif -%}
+    {{ field.type }} {{ field.name }} = {{ loop.index0 + 1 }};
+{% endfor %}
+}
+{% endfor %}
+
+
+service SOT {
+    rpc get_proto(get_protoRquest) returns (get_protoResponce) {}
+}
+message get_protoResponce {
+    string proto = 1;
+}
+message get_protoRquest {
+}

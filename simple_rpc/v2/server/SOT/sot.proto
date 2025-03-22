@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+service SOT {
+    rpc get_proto(get_protoRquest) returns (get_protoResponce) {}
+}
+message get_protoResponce {
+    string proto = 1;
+}
+message get_protoRquest {
+}
