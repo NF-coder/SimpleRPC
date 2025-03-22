@@ -1,0 +1,1 @@
+from .grpc_client_auto import GrpcClient as GrpcClientV2

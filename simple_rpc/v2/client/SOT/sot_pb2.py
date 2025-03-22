@@ -24,17 +24,17 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tsot.proto\"\"\n\x11get_protoResponce\x12\r\n\x05proto\x18\x01 \x01(\t\"\x11\n\x0fget_protoRquest2:\n\x03SOT\x12\x33\n\tget_proto\x12\x10.get_protoRquest\x1a\x12.get_protoResponce\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tsot.proto\")\n\x18get_active_protoResponce\x12\r\n\x05proto\x18\x01 \x01(\t\"\x18\n\x16get_active_protoRquest2U\n\tSOTServer\x12H\n\x10get_active_proto\x12\x17.get_active_protoRquest\x1a\x19.get_active_protoResponce\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'sot_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_GET_PROTORESPONCE']._serialized_start=13
-  _globals['_GET_PROTORESPONCE']._serialized_end=47
-  _globals['_GET_PROTORQUEST']._serialized_start=49
-  _globals['_GET_PROTORQUEST']._serialized_end=66
-  _globals['_SOT']._serialized_start=68
-  _globals['_SOT']._serialized_end=126
+  _globals['_GET_ACTIVE_PROTORESPONCE']._serialized_start=13
+  _globals['_GET_ACTIVE_PROTORESPONCE']._serialized_end=54
+  _globals['_GET_ACTIVE_PROTORQUEST']._serialized_start=56
+  _globals['_GET_ACTIVE_PROTORQUEST']._serialized_end=80
+  _globals['_SOTSERVER']._serialized_start=82
+  _globals['_SOTSERVER']._serialized_end=167
 # @@protoc_insertion_point(module_scope)

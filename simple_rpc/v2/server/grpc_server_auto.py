@@ -1,14 +1,12 @@
-from pydantic import BaseModel
 import grpc
 from typing_extensions import Callable
 import asyncio
-import inspect
 import pathlib
 import sys
 import os
 
-from .proto.proto_builder import ProtoBuilder
-from .SOT.source_of_truth_server import SOT
+from .proto_builder.proto_builder import ProtoBuilder
+from .SOT.source_of_truth_server import SOTServer
 
 class GrpcServer():
 
@@ -22,28 +20,36 @@ class GrpcServer():
             self.proto_pb2_grpc, f"add_{proto_service_name}Servicer_to_server"
         ) # function, that adds class to grpc service class
 
-    def _create_server_template(self, SOT_data: str) -> type[grpc.aio.Server]:
+    def _create_server_template(self) -> type[grpc.aio.Server]:
         server = grpc.aio.server() # async serveer init
         server.add_insecure_port(self.adress) # INSECURE connection info
-        
+
         self._register_servicer(
             self.cls.__class__.__name__
         )(self.cls, server) # proto service registration
-
-        if SOT_data is not None: # source-of-truth service registration
-            self._register_servicer(
-                "SOT"
-            )(SOT(SOT_data, self.proto_pb2_grpc, self.proto_pb2), server) # proto service registration
+        
+        self._register_servicer(
+            "SOTServer"
+        )(
+            SOTServer(
+                self.autobuilded_proto.split("service SOTServer")[0],
+                self.proto_pb2_grpc,
+                self.proto_pb2
+            ),
+            server
+        ) # source-of-truth service registration
         
         return server # type: ignore
     
     def configure_service(
             self,
             cls,
-            proto_dir_relpath: pathlib.Path,
+            proto_dir_relpath: pathlib.Path = None, # type: ignore
             ip: str = "0.0.0.0",
             port: int = 50051,
         ) -> None:
+        if proto_dir_relpath is None:
+            proto_dir_relpath=pathlib.Path("simplerpc_server_tmp")
         
         self.adress = f"{ip}:{port}"
         self.cls = cls
@@ -63,19 +69,18 @@ class GrpcServer():
     async def run_async(self):
         path = pathlib.Path.joinpath(self.abspath, f"{self.cls.__class__.__name__}.proto")
 
-        autobuilded_proto = self.proto_builder.build(
+        self.autobuilded_proto = self.proto_builder.build(
             cls = self.cls
         )
         with open(path, "w+", encoding="utf-8-sig") as f:
             f.write(
-                autobuilded_proto
+                self.autobuilded_proto
             )
         self.proto_pb2, self.proto_pb2_grpc = grpc.protos_and_services(
             (self.relpath / f"{self.cls.__class__.__name__}.proto").__str__()
         ) # type: ignore
-        server = self._create_server_template(
-            SOT_data=autobuilded_proto
-        )
+
+        server = self._create_server_template()
         await server.start() # type: ignore
         await server.wait_for_termination() # type: ignore
 

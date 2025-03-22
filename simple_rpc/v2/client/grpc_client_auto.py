@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 import grpc
 from .exceptions import GRPCException
 
@@ -6,8 +5,8 @@ import pathlib
 import os
 import sys
 
-from .SOT.proto import sot_pb2
-from .SOT.proto import sot_pb2_grpc
+from .SOT import sot_pb2
+from .SOT import sot_pb2_grpc
 
 class Command():
     def __init__(
@@ -50,10 +49,13 @@ class Command():
 class GrpcClient():
     def __init__(
             self,
-            proto_dir_relpath: pathlib.Path,
+            proto_dir_relpath: pathlib.Path = None, # type: ignore
             ip: str = "0.0.0.0",
             port: int = 50051
         ) -> None:
+
+        if proto_dir_relpath is None:
+            proto_dir_relpath = pathlib.Path("simplerpc_client_tmp")
 
         self.ip = ip
         self.port = port
@@ -66,18 +68,18 @@ class GrpcClient():
         path = pathlib.Path.joinpath(self.abspath, "proto.proto")
         with open(path, "w+", encoding="utf-8-sig") as f:
             f.write(
-                self.get_proto()
+                self.get_active_proto()
             )
 
         self.proto_pb2, self.proto_pb2_grpc = grpc.protos_and_services(
             (self.relpath / "proto.proto").__str__()
         ) # type: ignore
 
-    def get_proto(self):
+    def get_active_proto(self):
         with grpc.insecure_channel(f"{self.ip}:{self.port}") as channel:
-            stub = sot_pb2_grpc.SOTStub(channel=channel)
-            _ = sot_pb2.get_protoRquest()
-            return stub.get_proto(_).proto
+            stub = sot_pb2_grpc.SOTServerStub(channel=channel)
+            _ = sot_pb2.get_active_protoRquest()
+            return stub.get_active_proto(_).proto
         
 
     def configure_command(

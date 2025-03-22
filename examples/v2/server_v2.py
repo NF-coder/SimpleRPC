@@ -1,4 +1,4 @@
-from simple_rpc import GrpcServerV2
+from simple_rpc.v2.server import GrpcServerV2
 from pydantic import BaseModel
 import pathlib
 
@@ -21,7 +21,6 @@ class Server:
     
 app.configure_service(
     cls=Server(),
-    port=50056,
-    proto_dir_relpath=pathlib.Path("server_tmp")
+    port=50051
 )
 app.run()

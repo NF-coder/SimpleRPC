@@ -1,11 +1,10 @@
 from pydantic import BaseModel
-from simple_rpc import GrpcClientV2
+from simple_rpc.v2.client import GrpcClientV2
 import asyncio
 import pathlib
 
 client = GrpcClientV2(
-    proto_dir_relpath=pathlib.Path("client_tmp"),
-    port=50056
+    port=50051
 )
 command = client.configure_command(
     functionName="example_method",
