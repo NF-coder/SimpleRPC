@@ -49,17 +49,17 @@ app.run()
 client.py
 ```python
 from pydantic import BaseModel
-from simple_rpc.v2.client import GrpcClientV2
+from simple_rpc import GrpcClient
 import asyncio
 
-client = GrpcClientV2(
+client = GrpcClient(
+    proto_file_relpath="simplerpc_tmp/Server.proto", # Generates automatically on server startup
     port=50051
 )
 command = client.configure_command(
     functionName="example_method",
     className="Server"
 )
-
 
 async def run():
     print(
