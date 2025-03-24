@@ -1,4 +1,4 @@
-from simple_rpc.v2.server import GrpcServerV2
+from simple_rpc import GrpcServer
 from pydantic import BaseModel
 
 class RequestModel(BaseModel):
@@ -8,7 +8,7 @@ class ResponceModel(BaseModel):
     num2: int
     num4: int
 
-app = GrpcServerV2()
+app = GrpcServer()
 
 class Server:
     @app.grpc_method()

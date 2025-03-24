@@ -1,2 +1,2 @@
-from .v1.grpc_server_reduced import GrpcServer as GrpcServer
-from .v1.grpc_client_reduced import GrpcClient as GrpcClient
+from .server.grpc_server_auto import GrpcServer as GrpcServer
+from .client.grpc_client_auto import GrpcClient as GrpcClient

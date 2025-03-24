@@ -17,14 +17,3 @@ message {{ message.name }} {
 {% endfor %}
 }
 {% endfor %}
-
-
-
-service SOTServer {
-    rpc get_active_proto(get_active_protoRequest) returns (get_active_protoResponce) {}
-}
-message get_active_protoResponce {
-    string proto = 1;
-}
-message get_active_protoRequest {
-}

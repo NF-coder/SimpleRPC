@@ -6,7 +6,6 @@ import sys
 import os
 
 from .proto_builder.proto_builder import ProtoBuilder
-from .SOT.source_of_truth_server import SOTServer
 
 class GrpcServer():
 
@@ -28,36 +27,34 @@ class GrpcServer():
             self.cls.__class__.__name__
         )(self.cls, server) # proto service registration
         
-        self._register_servicer(
-            "SOTServer"
-        )(
-            SOTServer(
-                self.autobuilded_proto.split("service SOTServer")[0],
-                self.proto_pb2_grpc,
-                self.proto_pb2
-            ),
-            server
-        ) # source-of-truth service registration
-        
         return server # type: ignore
     
     def configure_service(
             self,
             cls,
-            proto_dir_relpath: pathlib.Path = None, # type: ignore
+            proto_file_relpath: str = None, # type: ignore
             ip: str = "0.0.0.0",
             port: int = 50051,
         ) -> None:
-        if proto_dir_relpath is None:
-            proto_dir_relpath=pathlib.Path("simplerpc_server_tmp")
         
         self.adress = f"{ip}:{port}"
         self.cls = cls
 
-        path = pathlib.Path(os.path.realpath(sys.argv[0])).parent / proto_dir_relpath
-        path.mkdir(parents=True, exist_ok=True)
-        self.abspath = path
-        self.relpath = proto_dir_relpath
+        self.proto_file_relapath = proto_file_relpath
+        self.relpath = pathlib.Path("simplerpc_tmp")   
+        self.abspath = pathlib.Path(os.path.realpath(sys.argv[0])).parent / self.relpath
+        self.abspath.mkdir(parents=True, exist_ok=True)
+
+    def build_proto_file(self):
+        path = pathlib.Path.joinpath(self.abspath, f"{self.cls.__class__.__name__}.proto")
+
+        with open(path, "w+", encoding="utf-8-sig") as f:
+            f.write(
+                self.proto_builder.build(
+                    cls = self.cls
+                )
+            )
+        return pathlib.Path.joinpath(self.relpath, f"{self.cls.__class__.__name__}.proto")
 
     def run(self):
         loop = asyncio.get_event_loop()
@@ -67,17 +64,11 @@ class GrpcServer():
             loop.close()
 
     async def run_async(self):
-        path = pathlib.Path.joinpath(self.abspath, f"{self.cls.__class__.__name__}.proto")
+        if self.proto_file_relapath is None:
+            self.proto_file_relapath = self.build_proto_file()
 
-        self.autobuilded_proto = self.proto_builder.build(
-            cls = self.cls
-        )
-        with open(path, "w+", encoding="utf-8-sig") as f:
-            f.write(
-                self.autobuilded_proto
-            )
         self.proto_pb2, self.proto_pb2_grpc = grpc.protos_and_services(
-            (self.relpath / f"{self.cls.__class__.__name__}.proto").__str__()
+            self.proto_file_relapath.__str__()
         ) # type: ignore
 
         server = self._create_server_template()

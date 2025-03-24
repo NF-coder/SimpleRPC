@@ -5,9 +5,6 @@ import pathlib
 import os
 import sys
 
-from .SOT import sot_pb2
-from .SOT import sot_pb2_grpc
-
 class Command():
     def __init__(
             self,
@@ -26,7 +23,7 @@ class Command():
         self.struct_name = struct_name
         self.func_name = func_name
         self.service_name = service_name
-    
+
     async def __call__(self, *args, **kwargs):
         async with grpc.aio.insecure_channel(f"{self.ip}:{self.port}") as channel:
             stub = getattr(
@@ -49,37 +46,17 @@ class Command():
 class GrpcClient():
     def __init__(
             self,
-            proto_dir_relpath: pathlib.Path = None, # type: ignore
+            proto_file_relpath: str, # type: ignore
             ip: str = "0.0.0.0",
             port: int = 50051
         ) -> None:
 
-        if proto_dir_relpath is None:
-            proto_dir_relpath = pathlib.Path("simplerpc_client_tmp")
-
         self.ip = ip
         self.port = port
-
-        path = pathlib.Path(os.path.realpath(sys.argv[0])).parent / proto_dir_relpath
-        path.mkdir(parents=True, exist_ok=True)
-        self.abspath = path
-        self.relpath = proto_dir_relpath
-
-        path = pathlib.Path.joinpath(self.abspath, "proto.proto")
-        with open(path, "w+", encoding="utf-8-sig") as f:
-            f.write(
-                self.get_active_proto()
-            )
-
+        
         self.proto_pb2, self.proto_pb2_grpc = grpc.protos_and_services(
-            (self.relpath / "proto.proto").__str__()
+            proto_file_relpath
         ) # type: ignore
-
-    def get_active_proto(self):
-        with grpc.insecure_channel(f"{self.ip}:{self.port}") as channel:
-            stub = sot_pb2_grpc.SOTServerStub(channel=channel)
-            _ = sot_pb2.get_active_protoRquest()
-            return stub.get_active_proto(_).proto
         
 
     def configure_command(
