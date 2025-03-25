@@ -57,7 +57,6 @@ class GrpcClient():
         self.proto_pb2, self.proto_pb2_grpc = grpc.protos_and_services(
             proto_file_relpath
         ) # type: ignore
-        
 
     def configure_command(
             self,

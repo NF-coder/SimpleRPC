@@ -72,6 +72,7 @@ class GrpcServer():
         ) # type: ignore
 
         server = self._create_server_template()
+        print(f"Starting server on {self.adress}...")
         await server.start() # type: ignore
         await server.wait_for_termination() # type: ignore
 
