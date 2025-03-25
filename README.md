@@ -12,7 +12,7 @@ pip install git+https://github.com/NF-coder/SimpleRPC.git
 - [x] Exceptions handling
 - [ ] Secure channels support
 - [x] Autoconfigure from pydantic model
-- [x] Simplify usage
+- [ ] Simplify usage
 - [ ] Tests and docs
 
 ## Quick Start
